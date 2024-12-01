@@ -1,0 +1,18 @@
+import { SortedOrder } from "./enums"
+
+export interface Response<T>{
+    success:boolean,
+    data : T,
+    message : string
+}
+export interface Combo{
+    id : number,
+    name : string,
+}
+export interface PaginationRequest{
+    pageIndex : number,
+    itemsPerPage : number,
+    search : string,
+    orderKey : string,
+    sortedOrder : SortedOrder
+}

@@ -1,0 +1,9 @@
+import axios from "axios";
+
+const http = axios.create({
+    baseURL : "https://localhost:3000/api",
+    timeout : 3000,
+    headers :{Authorization : 'Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiUHJpbmNlIFJhZ2h1d2Fuc2hpIiwiTmFtZSI6IlByaW5jZSBSYWdodXdhbnNoaSIsIlVzZXJJZCI6IjIiLCJqdGkiOiIzMjcxOGI0OC0wMWM5LTQ0NjEtOTMxYS1hOWU2MjQzYmVkNTkiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJTdXBlckFkbWluIiwiUm9sZSI6IlN1cGVyQWRtaW4iLCJEYXRlIjoiMzAtMTEtMjAyNCAyMTo1MzoyMSIsImV4cCI6MTczMzQxNTgwMSwiaXNzIjoiSnd0SXNzdWVyOyIsImF1ZCI6Ikp3dEF1ZGllbmNlOyJ9.u5n5p122H350eL31YgzDnKTes3Az8UqUUrOUCFpVfFA'}
+})
+
+export default http;
