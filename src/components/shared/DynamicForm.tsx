@@ -45,7 +45,7 @@ function DynamicForm<T extends FieldValues>({ fields, onSubmit }: DynamicFormPro
             <div className="flex justify-center my-4">
                 <button
                     type="submit"
-                    className="px-4 py-2 rounded-lg font-semibold bg-green-600 text-white"
+                    className="px-4 py-2 rounded-lg font-semibold bg-[#0e9f6e] text-white"
                 >
                     Submit
                 </button>
