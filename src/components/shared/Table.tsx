@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { FaArrowUp, FaArrowDown } from "react-icons/fa";
-import {MdDelete, MdEdit,  MdSearch  } from "react-icons/md";
+import {MdRemoveRedEye,  MdSearch  } from "react-icons/md";
 import Pagination from "./Pagination";
 interface TableProps {
     heading : string;
@@ -9,13 +9,12 @@ interface TableProps {
     handleAdd?:()=> void;
     columns: string[]; // Column names
     data: any[]; // Data rows
-    onEdit: (index: number) => void; // Edit row function
-    onDelete: (index: number) => void; // Delete row function
     filters?:object // TODO:::
 }
 
-const Table: React.FC<TableProps> = ({ columns, data, onEdit, onDelete, heading, showSearch, showAdd, handleAdd }) => {
+const Table: React.FC<TableProps> = ({ columns, data,  heading, showSearch, showAdd, handleAdd }) => {
     const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' }>({ key: '', direction: 'asc' });
+    
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [perPage, setPerPage] = useState<number>(10)
     const handlePageChange =(page:number) => {
@@ -98,7 +97,7 @@ const Table: React.FC<TableProps> = ({ columns, data, onEdit, onDelete, heading,
                                 ) : null}
                             </th>
                         ))}
-                        <th className=" px-4 py-2">Actions</th>
+                        <th className=" px-4 py-2">View</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -111,9 +110,8 @@ const Table: React.FC<TableProps> = ({ columns, data, onEdit, onDelete, heading,
                                 </td>
                             ))}
                             <td className="px-4 py-2">
-                                <div className="flex gap-x-2">
-                                <MdEdit color="gray" onClick={()=> onEdit(rowIndex)} cursor={"pointer"} />
-                                <MdDelete color="gray" onClick={()=> onDelete(rowIndex)} cursor={"pointer"} />
+                                <div className="flex gap-x-2 justify-center items-center">
+                                <MdRemoveRedEye cursor={"pointer"} />
                                 </div>
                             </td>
                         </tr>
