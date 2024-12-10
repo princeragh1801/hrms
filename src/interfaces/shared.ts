@@ -16,3 +16,8 @@ export interface PaginationRequest{
     orderKey : string,
     sortedOrder : SortedOrder
 }
+export interface PaginationResponse<T>{
+    data : T,
+    totalItems : number,
+    totalPages : number,
+}
