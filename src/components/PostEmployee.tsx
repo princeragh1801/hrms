@@ -167,11 +167,12 @@ function PostEmployee() {
     }
     const getManagerCombo = useCallback(async (id: number) => {
         try {
+            setManagerList([])
             const response = await getCombo(`/Employee/department/${id}`);
             console.log("Response : ", response);
             if (response.status >= 200 && response.status < 300) {
                 const data: Response<Combo[]> = response.data;
-                setManagerId(null);
+                // setManagerId(null);
                 setManagerList(data.data);
             }
         } catch (error) {
@@ -207,7 +208,7 @@ function PostEmployee() {
             getEmployee()
         }
     },[])
-    
+
   return (
     <div className="h-full w-full flex justify-center items-center">
         <div className="border-2 rounded-lg flex items-center justify-center flex-col gap-x-2">

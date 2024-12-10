@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import Table from "../components/shared/Table"
-import { getEmployees } from "../services/employee";
+import { deleteEmployee, getEmployees } from "../services/employee";
 import { Employee } from "../interfaces/employee";
 import { PaginationRequest, PaginationResponse, Response } from "../interfaces/shared";
 import { EmployeeTable } from "../constants/tableConfigurations";
@@ -21,7 +21,7 @@ function Employees() {
     sortedOrder:SortedOrder.NoOrder
   })
   const [response, setResponse] = useState<PaginationResponse<Employee[]>>()
-
+  const [deletingId, setDeletingId] = useState<number>(0)
   const getEmployeeList = async() => {
     try {
       const response = await getEmployees(pagination);
@@ -97,7 +97,10 @@ function Employees() {
           return (
             <div className="flex gap-x-2">
               <MdEdit cursor="pointer" onClick={() => navigate(`post/${employee.id}`)} />
-              <MdDelete cursor="pointer" onClick={() => setShowModal(true)}/>
+              <MdDelete cursor="pointer" onClick={() => {
+                setDeletingId(employee.id)
+                setShowModal(true)
+                }}/>
             </div>
           )
         default:
@@ -106,6 +109,24 @@ function Employees() {
     },
     [pagination]
   );
+
+  const handleDelete = async ()=>{
+    try {
+      const response = await deleteEmployee(deletingId)
+      console.log("Response : ", response)
+      if(response.status >= 200 && response.status < 300){
+        const responseData : Response<boolean> = response.data;
+        if(responseData.success){
+          console.log(responseData.message)
+          setPagination({...pagination, pageIndex : 1})
+        }
+      }
+    } catch (error) {
+      console.log("Error occured while deleting employee, ", error)
+    }finally{
+      setShowModal(false)
+    }
+  }
   return (
     <PageWrapper pagination={pagination} setPagintion={setPagination} heading="Employees" showAdd={true} addBtnName={"Add an employee"} filters={filters} showSearch={true} handleAdd={() => {
       navigate("post")
@@ -120,7 +141,7 @@ function Employees() {
       {showModal && <ConfirmModal
       heading='Confirm Deletion'
       description='Are you sure you want to delete this item? This action cannot be undone.'
-      onConfirm={()=>setShowModal(false)}
+      onConfirm={handleDelete}
       setShowModal={setShowModal}
       />}
     </PageWrapper>

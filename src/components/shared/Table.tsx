@@ -2,6 +2,7 @@ import { Dispatch, ReactNode, SetStateAction, useState } from "react";
 import { FaArrowUp, FaArrowDown } from "react-icons/fa";
 import Pagination from "./Pagination";
 import { PaginationRequest, PaginationResponse } from "../../interfaces/shared";
+import { SortedOrder } from "../../interfaces/enums";
 interface TableProps<T> {
     renderCell:(item : T, columnKey : string, index : number) => ReactNode;
     columns: {name:string, id : string}[] // Column names
@@ -26,6 +27,7 @@ function Table<T>({ columns, data, renderCell, setPagintion, pagination }:TableP
             direction = 'desc';
         }
         setSortConfig({ key, direction });
+        setPagintion({...pagination, orderKey : key, sortedOrder : sortConfig.direction === 'asc' ? SortedOrder.Ascending : SortedOrder.Descending})
         //setEditedData(sortedData);
     };
     

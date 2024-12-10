@@ -50,7 +50,7 @@ const Input: React.FC<InputProps> = ({ value, label, type, placeholder, register
                 <>
                     <label className="font-semibold text-gray-600">{label}</label>
                     <select
-                        defaultChecked={value}
+                        value={value}
                         className="bg-gray-100 p-2 w-60 border-2 rounded-lg"
                         {...register} // Register the input for form validation
                         onChange={(e) => {
