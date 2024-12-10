@@ -1,4 +1,5 @@
 import { Role } from "./enums";
+import { Combo } from "./shared";
 
 export interface AddEmployeeDto {
     username: string; 
@@ -22,4 +23,7 @@ export interface Employee {
     departmentName: string | null;
     createdOn: Date; // Alternatively, you can use `Date` if you parse the string into a date object
 }
-  
+
+export interface EmployeeCombo extends Combo{
+    departmentName : string
+}

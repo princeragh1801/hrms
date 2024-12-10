@@ -7,3 +7,10 @@ export const EmployeeTable =[
     { name : "Role", id : "role"},
     { name : "Actions", id : "actions"},
 ]
+
+export const DepartmentTable =[
+    { name : "S.No.", id : "uid"},
+    { name : "Name", id : "name"},
+    { name : "CreatedBy", id: "createdBy"},
+    { name : "Actions", id : "actions"},
+]

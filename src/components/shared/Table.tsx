@@ -1,22 +1,23 @@
-import { ReactNode, useState } from "react";
+import { Dispatch, ReactNode, SetStateAction, useState } from "react";
 import { FaArrowUp, FaArrowDown } from "react-icons/fa";
 import Pagination from "./Pagination";
+import { PaginationRequest, PaginationResponse } from "../../interfaces/shared";
 interface TableProps<T> {
     renderCell:(item : T, columnKey : string, index : number) => ReactNode;
     columns: {name:string, id : string}[] // Column names
-    data: T[]; // Data rows
+    data: PaginationResponse<T[]>; // Data rows
+    pagination : PaginationRequest
+    setPagintion:Dispatch<SetStateAction<PaginationRequest>>
 }
 
-function Table<T>({ columns, data, renderCell }:TableProps<T>)  {
+function Table<T>({ columns, data, renderCell, setPagintion, pagination }:TableProps<T>)  {
     const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' }>({ key: '', direction: 'asc' });
     
-    const [currentPage, setCurrentPage] = useState<number>(1);
-    const [perPage, setPerPage] = useState<number>(10)
     const handlePageChange =(page:number) => {
-        setCurrentPage(page)
+        setPagintion({...pagination, pageIndex : page})
     }
     const handlePerPageChange =(items:number) => {
-        setPerPage(items)
+        setPagintion({...pagination, pagedItemsCount:items, pageIndex : 1})
     }
     // Sorting function
     const sortData = (key: string) => {
@@ -54,8 +55,8 @@ function Table<T>({ columns, data, renderCell }:TableProps<T>)  {
     </tr>
 </thead>
 <tbody>
-    {data.length > 0 ? (
-        data.map((row, rowIndex) => (
+    {data.data.length > 0 ? (
+        data.data.map((row, rowIndex) => (
             <tr key={rowIndex} className="border">
                 {columns.map((column) => (
                     <td key={column.id} className="px-4 py-2">
@@ -76,7 +77,7 @@ function Table<T>({ columns, data, renderCell }:TableProps<T>)  {
 
         </div>
         {/* Pagination  */}
-        <Pagination currentPage={currentPage} handlePageChange={handlePageChange} totalEntries={1001} perPage={perPage} handlePerPageChange={handlePerPageChange} />
+        <Pagination currentPage={pagination.pageIndex} handlePageChange={handlePageChange} totalEntries={data.totalItems} perPage={pagination.pagedItemsCount} handlePerPageChange={handlePerPageChange} />
         </div>
     );
 };

@@ -3,7 +3,8 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Layout from './Layout';
-import {Dashboard, Departments, Employees, Projects, Tasks} from './pages/index.ts';
+import {Dashboard, Departments, Employees, Login, Projects, Tasks} from './pages/index.ts';
+import PostEmployee from './components/PostEmployee.tsx';
 
 const router = createBrowserRouter([
   {
@@ -18,9 +19,13 @@ const router = createBrowserRouter([
       },
       {
         path: 'employee',
-        element: (
-            <Employees />
-        ),
+        element: <Employees/>,
+        
+      },
+      {
+        path: 'employee/post/:employeeId?',
+        element: <PostEmployee/>,
+        
       },
       {
         path: 'department',
@@ -38,6 +43,12 @@ const router = createBrowserRouter([
         path: 'task',
         element: (
             <Tasks />
+        ),
+      },
+      {
+        path: 'login',
+        element: (
+            <Login />
         ),
       },
     ],

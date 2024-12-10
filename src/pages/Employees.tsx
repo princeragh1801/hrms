@@ -2,28 +2,35 @@ import { useCallback, useEffect, useState } from "react";
 import Table from "../components/shared/Table"
 import { getEmployees } from "../services/employee";
 import { Employee } from "../interfaces/employee";
-import { PaginationResponse, Response } from "../interfaces/shared";
+import { PaginationRequest, PaginationResponse, Response } from "../interfaces/shared";
 import { EmployeeTable } from "../constants/tableConfigurations";
 import PageWrapper from "../components/shared/PageWrapper";
+import { useNavigate } from "react-router-dom";
+import { Role, SortedOrder } from "../interfaces/enums";
+import { MdDelete, MdEdit } from "react-icons/md";
+import ConfirmModal from "../components/modal/ConfirmModal";
 
 function Employees() {
-  const columns = ["name", "email", "departmentName", "managerName", "salary", "createdOn"]; // Column names
-  
-  const [data, setData] = useState<Employee[]>([]);
-  const [totalItems, setTotalItems] = useState<number>(0);
-  const [totalPages, setTotalPages] = useState<number>(0);
+  const navigate = useNavigate();
+  const [showModal, setShowModal] = useState<boolean>(false)
+  const [pagination, setPagination] = useState<PaginationRequest>({
+    pageIndex:1,
+    pagedItemsCount:10,
+    orderKey:"",
+    search:"",
+    sortedOrder:SortedOrder.NoOrder
+  })
+  const [response, setResponse] = useState<PaginationResponse<Employee[]>>()
+
   const getEmployeeList = async() => {
     try {
-      const response = await getEmployees();
+      const response = await getEmployees(pagination);
       console.log("response : ", response)
       if(response.status >= 200 && response.status < 300){
         const responseData : Response<PaginationResponse<Employee[]>>= response.data;
         if(responseData.success){
-          setData(responseData.data.data)
-          setTotalItems(responseData.data.totalItems);
-          setTotalPages(responseData.data.totalPages);
+          setResponse(responseData.data)
         }
-        // console.log("Response data : ", responseData)
       }
     } catch (error) {
       console.error("Error occured while fetching employees, ", error)
@@ -31,14 +38,50 @@ function Employees() {
   }
   useEffect(() => {
     getEmployeeList()
-  },[])
+  },[pagination])
 
+  const filters = [
+      (<div key={"1"} className="flex border-2 rounded-lg">
+      <div className="ml-2 flex flex-col justify-center">
+      <label className="font-semibold text-gray-600">Role:</label>
+      </div>
+      <select
+          className="mr-2 focus:outline-none " onChange={(e) => console.log("Role changed: ", e.target.value)}
+      >
+              <option key="1" value={Role.Employee}>
+                  Employee
+              </option>
+              <option key="2" value={Role.Admin}>
+                  Admin
+              </option>
+              <option key="3" value={Role.SuperAdmin}>
+                  SuperAdmin
+              </option>
+      </select>
+    </div>),
+    
+  ]
+  const getRole = (role : Role) =>{
+    switch (role) {
+      case Role.Employee:
+        return "Employee"
+
+      case Role.Admin:
+        return "Admin"
+
+      case Role.SuperAdmin:
+        return "SuperAdmin"
+      
+      default:
+        return "Employee"
+    }
+  }
   const renderCell = useCallback(
     (employee: Employee, columnKey: string, index: number) => {
       switch (columnKey) {
         case "uid":
           return (
-            <p className="text-bold text-sm   text-gray-900">{index + 1}</p>
+            <p className="text-bold text-sm   text-gray-900">{((pagination.pageIndex-1)*pagination.pagedItemsCount) + index + 1}</p>
           );
         case "name":
           return <p className="text-bold text-sm   text-gray-900">{employee.name}</p>
@@ -49,23 +92,37 @@ function Employees() {
         case "manager":
           return <p className="text-bold text-sm   text-gray-900">{employee.managerName || "-"}</p>
         case "role":
-          return <p className="text-bold text-sm   text-gray-900">{employee.role}</p>
+          return <p className="text-bold text-sm   text-gray-900">{getRole(employee.role)}</p>
         case "actions":
-          return <p className="text-bold text-sm   text-gray-900">{employee.id}</p>
+          return (
+            <div className="flex gap-x-2">
+              <MdEdit cursor="pointer" onClick={() => navigate(`post/${employee.id}`)} />
+              <MdDelete cursor="pointer" onClick={() => setShowModal(true)}/>
+            </div>
+          )
         default:
           return null;
       }
     },
-    []
+    [pagination]
   );
   return (
-    <PageWrapper heading="Employees" showAdd={true} showSearch={true} handleAdd={() => {}} >
-      <Table
+    <PageWrapper pagination={pagination} setPagintion={setPagination} heading="Employees" showAdd={true} addBtnName={"Add an employee"} filters={filters} showSearch={true} handleAdd={() => {
+      navigate("post")
+    }} >
+      {response && <Table
       renderCell={renderCell}
       columns={EmployeeTable}
-      data={data}
-      
-      />
+      data={response}
+      setPagintion={setPagination}
+      pagination={pagination}
+      />}
+      {showModal && <ConfirmModal
+      heading='Confirm Deletion'
+      description='Are you sure you want to delete this item? This action cannot be undone.'
+      onConfirm={()=>setShowModal(false)}
+      setShowModal={setShowModal}
+      />}
     </PageWrapper>
   )
 }

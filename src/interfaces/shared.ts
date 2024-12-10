@@ -11,7 +11,7 @@ export interface Combo{
 }
 export interface PaginationRequest{
     pageIndex : number,
-    itemsPerPage : number,
+    pagedItemsCount : number,
     search : string,
     orderKey : string,
     sortedOrder : SortedOrder

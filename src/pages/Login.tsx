@@ -1,4 +1,4 @@
-import DynamicForm from "../components/shared/DynamicForm";
+import DynamicForm, { FieldConfig } from "../components/shared/DynamicForm";
 
 interface LoginFormValues {
     username: string;
@@ -7,7 +7,7 @@ interface LoginFormValues {
   }
 function Login() {
 
-    const fields = [
+    const fields : FieldConfig[] = [
         {
             name: "username",
             label: "Username",
@@ -46,14 +46,22 @@ function Login() {
         },
       },
       {
+        name: "agree-and-continue",
+        label: "Agree & Continue",
+        type: "checkbox",
+        validation: {
+            required: "You must accept the terms and conditions",
+        },
+      },
+      {
         name: "gender",
         label: "Gender",
         type: "radio",
         validation: { required: "Please select a gender" },
         options: [
-            { label: "Male", value: 1 },
-            { label: "Female", value: 2 },
-            { label: "Other", value: 3 },
+            { name: "Male", id: 1 },
+            { name: "Female", id: 2 },
+            { name: "Other", id: 3 },
         ],
         inputOptions: { valueAsNumber: true },
       },
@@ -69,9 +77,26 @@ function Login() {
         },
         inputOptions: { valueAsNumber: true },
         options: [
-            { label: "Admin", value: 1 },
-            { label: "User", value: 2 },
-            { label: "Guest", value: 3 },
+            { name: "Admin", id: 1 },
+            { name: "User", id: 2 },
+            { name: "Guest", id: 3 },
+        ],
+      },
+      {
+        name: "type",
+        label: "Type",
+        type: "select",
+        placeholder:"Select a type",
+        validation: {
+            required: "Type is required",
+            min:{value:1, message:"Please select a valid type"},
+            max:{value:3, message:"Please select a valid type"}
+        },
+        inputOptions: { valueAsNumber: true },
+        options: [
+            { name: "Admin", id: 1 },
+            { name: "User", id: 2 },
+            { name: "Guest", id: 3 },
         ],
       }
     ];
@@ -81,7 +106,7 @@ function Login() {
         console.log("Login Form Submitted:", data);
     };
   return (
-    <div className="h-screen w-full flex justify-center items-center">
+    <div className="h-full w-full flex justify-center items-center">
         <div className="border-2 rounded-lg flex items-center justify-center flex-col gap-x-2">
             <h1 className="font-bold text-xl my-4">Login</h1>
             <DynamicForm<LoginFormValues> fields={fields} onSubmit={handleLoginSubmit} />

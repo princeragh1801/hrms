@@ -3,26 +3,29 @@ import { useForm, SubmitHandler, FieldValues } from "react-hook-form";
 import Input from "./Input";
 
 export interface FieldConfig {
+    value?:any;
     name: string;
     label: string;
     type: string; // e.g., "text", "checkbox", "radio"
     placeholder?: string; // Optional, not needed for radio
-    validation: {
+    validation?: {
         required: string;
         minLength?: { value: number; message: string };
         min?: { value: number; message: string };
         max?: { value: number; message: string };
     };
-    options?: { label: string; value: string | number }[]; // For radio or select inputs
+    options?: { name: string; id: string | number }[]; // For radio or select inputs
     inputOptions?: { valueAsNumber?: boolean }; // For numeric or checkbox-specific configurations
+    handleChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void; // Ensure proper typing for handleChange
 }
 
 interface DynamicFormProps<T extends FieldValues> {
     fields: FieldConfig[];
     onSubmit: SubmitHandler<T>;
+    classname?:string
 }
 
-function DynamicForm<T extends FieldValues>({ fields, onSubmit }: DynamicFormProps<T>) {
+function DynamicForm<T extends FieldValues>({ fields, onSubmit, classname }: DynamicFormProps<T>) {
     const {
         register,
         handleSubmit,
@@ -30,9 +33,10 @@ function DynamicForm<T extends FieldValues>({ fields, onSubmit }: DynamicFormPro
     } = useForm<T>();
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form className={`w-full ${classname}` }onSubmit={handleSubmit(onSubmit)}>
             {fields.map((field, index) => (
                 <Input
+                value={field.value}
                     key={index}
                     label={field.label}
                     type={field.type}
@@ -40,6 +44,7 @@ function DynamicForm<T extends FieldValues>({ fields, onSubmit }: DynamicFormPro
                     register={register(field.name as any, { ...field.validation, valueAsNumber:field.inputOptions?.valueAsNumber })}
                     options={field.options}
                     error={errors[field.name as keyof T]?.message?.toString()}
+                    handleChange={field.handleChange}
                 />
             ))}
             <div className="flex justify-center my-4">
