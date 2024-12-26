@@ -1,16 +1,19 @@
 import { useCallback, useEffect, useState } from "react";
 import Table from "../components/shared/Table"
-import { getDepartments } from "../services/department";
+import { deleteDepartment, getDepartments } from "../services/department";
 import { Department } from "../interfaces/department";
 import { PaginationRequest, PaginationResponse, Response } from "../interfaces/shared";
 import { DepartmentTable } from "../constants/tableConfigurations";
 import PageWrapper from "../components/shared/PageWrapper";
-import { useNavigate } from "react-router-dom";
 import { SortedOrder } from "../interfaces/enums";
+import { MdDelete } from "react-icons/md";
+import AddDepartment from "../components/AddDepartment";
+import ConfirmModal from "../components/modal/ConfirmModal";
 
 function Departments() {
-  const navigate = useNavigate();
-  //const columns = ["name", "email", "departmentName", "managerName", "salary", "createdOn"]; // Column names
+  const [showModal, setShowModal] = useState(false)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [id, setId] = useState<number>(0)
   const [pagination, setPagination] = useState<PaginationRequest>({
     pageIndex:1,
     pagedItemsCount:10,
@@ -34,6 +37,20 @@ function Departments() {
       console.error("Error occured while fetching Departments, ", error)
     }
   }
+  const handleDelete = async() => {
+    try {
+      const response = await deleteDepartment(id);
+      console.log("Response : ", response)
+      if(response.status >= 200 && response.status < 300){
+        const responseData : Response<boolean> = response.data;
+        if(responseData.success){
+          console.log("Response : ", responseData.message)
+        }
+      }
+    } catch (error) {
+      console.error("Error occured while deleting the department, ", error)
+    }
+  }
   useEffect(() => {
     getDepartmentList()
   },[pagination])
@@ -47,11 +64,18 @@ function Departments() {
           );
         case "name":
           return <p className="text-bold text-sm   text-gray-900">{department.name}</p>
-        case "createdBy":
-          return <p className="text-bold text-sm   text-gray-900">{department.createdBy}</p>
+        // case "createdBy":
+        //   return <p className="text-bold text-sm   text-gray-900">{department.createdBy}</p>
         
         case "actions":
-          return <p className="text-bold text-sm   text-gray-900">{department.id}</p>
+          return (
+                  <div className="flex items-center">
+                    <MdDelete cursor="pointer" onClick={() => {
+                      setId(department.id) 
+                      setShowDeleteModal(true)
+                    }}/>
+                  </div>
+                )
         default:
           return null;
       }
@@ -60,7 +84,7 @@ function Departments() {
   );
   return (
     <PageWrapper pagination={pagination} setPagintion={setPagination} heading="Departments" showAdd={true} addBtnName="Add department" showSearch={true} handleAdd={() => {
-      navigate("post")
+      setShowModal(true)
     }} >
       {response && <Table
       renderCell={renderCell}
@@ -69,6 +93,8 @@ function Departments() {
       setPagintion={setPagination}
       pagination={pagination}
       />}
+      {showModal && <AddDepartment setShowModal={setShowModal}/>}
+      {showDeleteModal && <ConfirmModal heading="Confirm Deletion" description="Are you sure you really want to delete this item" setShowModal={setShowDeleteModal} onConfirm={handleDelete} />}
     </PageWrapper>
   )
 }

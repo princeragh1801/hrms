@@ -43,7 +43,7 @@ function Sidebar({ children }: any) {
               key={item.title}
               onClick={() => setIsActive(index + 1)}
               to={item.path}
-              className={`flex gap-x-4 items-center px-4 py-2 hover:shadow-lg hover:bg-green-100 hover:text-green-600 rounded-lg ${
+              className={`flex mt-5 gap-x-4 items-center px-4 py-2 hover:shadow-lg hover:bg-green-100 hover:text-green-600 rounded-lg ${
                 isActive === index + 1 && "bg-[#0e9f6e] text-white"
               }`}
             >

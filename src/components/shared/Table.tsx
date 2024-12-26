@@ -59,7 +59,7 @@ function Table<T>({ columns, data, renderCell, setPagintion, pagination }:TableP
 <tbody>
     {data.data.length > 0 ? (
         data.data.map((row, rowIndex) => (
-            <tr key={rowIndex} className="border">
+            <tr key={rowIndex} className="border hover:bg-gray-300">
                 {columns.map((column) => (
                     <td key={column.id} className="px-4 py-2">
                         {renderCell(row, column.id, rowIndex)}

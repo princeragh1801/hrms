@@ -5,9 +5,30 @@ import { getCombo } from "../services/shared";
 import { Combo, Response } from "../interfaces/shared";
 import { getEmployeeForUpdate } from "../services/employee";
 import { useParams } from "react-router-dom";
+import { Role } from "../interfaces/enums";
+import { useForm } from "react-hook-form";
+import Input from "./shared/Input";
 
+interface PostEmployeeFormValues {
+    username: string;
+    password: string;
+    name: string;
+    email: string;
+    phone: string;
+    address: string;
+    salary: number;
+    departmentID: number;
+    managerID: number;
+    role: Role;
+}
 
 function PostEmployee() {
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm<PostEmployeeFormValues>();
+
     const {employeeId} = useParams()
     const [departmentList, setDepartmentList] = useState<Combo[]>([])
     const [managerList, setManagerList] = useState<Combo[]>([])
@@ -210,10 +231,34 @@ function PostEmployee() {
     },[])
 
   return (
-    <div className="h-full w-full flex justify-center items-center">
+    <div className="h-full w-full flex justify-start items-start">
         <div className="border-2 rounded-lg flex items-center justify-center flex-col gap-x-2">
             <h1 className="font-bold text-xl my-4">{isEditMode ? "Update" : "Add"} Employee</h1>
-            <DynamicForm<AddEmployeeDto> fields={fields} onSubmit={handlePost} classname="grid grid-cols-1 md:grid-cols-2 gap-4" />
+            <form className={`w-full` }onSubmit={handleSubmit(handlePost)}>
+            <div className="flex flex-wrap overflow-auto">
+            {fields.map((field, index) => (
+                <Input
+                value={field.value}
+                    key={index}
+                    label={field.label}
+                    type={field.type}
+                    placeholder={field.placeholder}
+                    register={register(field.name as any, { ...field.validation, valueAsNumber:field.inputOptions?.valueAsNumber })}
+                    options={field.options}
+                    //error={errors[field.name as keyof T]?.message?.toString()}
+                    handleChange={field.handleChange}
+                />
+            ))}
+            </div>
+            <div className="flex justify-center my-4">
+                <button
+                    type="submit"
+                    className="px-4 py-2 rounded-lg font-semibold bg-[#0e9f6e] text-white"
+                >
+                    Submit
+                </button>
+            </div>
+        </form>
         </div>
     </div>
   )

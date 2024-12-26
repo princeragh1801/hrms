@@ -11,6 +11,14 @@ export const EmployeeTable =[
 export const DepartmentTable =[
     { name : "S.No.", id : "uid"},
     { name : "Name", id : "name"},
-    { name : "CreatedBy", id: "createdBy"},
+    //{ name : "CreatedBy", id: "createdBy"},
+    { name : "Actions", id : "actions"},
+]
+
+export const ProjectTable =[
+    { name : "S.No.", id : "uid"},
+    { name : "Name", id : "name"},
+    { name : "Status", id : "status"},
+    //{ name : "CreatedBy", id: "createdBy"},
     { name : "Actions", id : "actions"},
 ]
